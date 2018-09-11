@@ -26,12 +26,19 @@ class Pedigree(dict):
 
         with open(file_name, 'r') as fh:
             for line in fh:
+                if line.startswith("#"):
+                    continue
                 data = line.strip().split('\t')
                 n_ped = _PedSample(*data[:5], phenotype=data[5:])
                 self.families[n_ped.fam_id].append(n_ped)
                 if n_ped.ind_id in self:
                     raise KeyError("Duplicate Individual Id %s" % n_ped.ind_id)
                 self[n_ped.ind_id] = n_ped
+                if n_ped.mat_id not in self and n_ped.mat_id != "0":
+                    self[n_ped.mat_id] = _PedSample(n_ped.fam_id, n_ped.mat_id, "0", "0", "2", "0")
+                if n_ped.pat_id not in self and n_ped.pat_id != "0":
+                    self[n_ped.pat_id] = _PedSample(n_ped.fam_id, n_ped.pat_id, "0", "0", "2", "0")
+
             for indiv in self:
                 n_ped = self[indiv]
                 if n_ped.pat_id in self:
