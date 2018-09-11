@@ -1,9 +1,9 @@
-from distutils.core import setup
+from setuptools import setup
 #from Cython.Build import cythonize
 
 setup(
     name='ACEBinf',
-    version='0.1dev',
+    version='0.1dev.1',
     author="ACEnglish",
     author_email="acenglish@gmail.com",
     url="https://github.com/ACEnglish/acebinf",
