@@ -1,1 +1,2 @@
 *.pyc
+build/ dist/ test_py/ three_test/ trash/ MANIFEST

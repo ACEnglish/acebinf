@@ -4,6 +4,9 @@ from distutils.core import setup
 setup(
     name='ACEBinf',
     version='0.1dev',
+    author="ACEnglish",
+    author_email="acenglish@gmail.com",
+    url="https://github.com/ACEnglish/acebinf",
     packages=['acebinf',],
     license='Unlicense',
     long_description=open('README.txt').read(),
