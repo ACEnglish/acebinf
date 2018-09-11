@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='ACEBinf',
-    version='0.1dev.1',
+    version='1.0.0',
     author="ACEnglish",
     author_email="acenglish@gmail.com",
     url="https://github.com/ACEnglish/acebinf",
