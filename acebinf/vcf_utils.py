@@ -22,10 +22,15 @@ def add_info(vcf_file, nid, num, ntype, desc, source=None, version=None):
         id=nid, num=num, type=ntype, desc=desc, source=source, version=version)
 
 
-def edit_format(sample, **kwargs):
+def edit_format(vcf_entry, sample, **kwargs):
     """
     Given a sample and FORMAT=value kwargs, edit an entry's information in-place
     """
+    fmt_data = vcf_entry.FORMAT.split(':')
+    for key in kwargs:
+        if key not in fmt_data:
+            vcf_entry.add_format(key)
+
     n_call_data = vcf.model.make_calldata_tuple(sample.data._fields + tuple(kwargs.keys()))
     n_data = tuple(kwargs.values())
     sample.data += n_data

@@ -16,7 +16,8 @@ def setup_logging(debug=False, stream=sys.stderr, log_format=None):
     logging.basicConfig(stream=stream, level=logLevel, format=log_format)
     logging.info("Running %s", " ".join(sys.argv))
 
-    def sendWarningsToLog(message, category, filename, lineno):
+    # pylint:disable=unused-argument
+    def sendWarningsToLog(message, category, filename, lineno, *args, **kwargs):
         """
         Put warnings into logger
         """

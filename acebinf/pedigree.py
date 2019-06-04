@@ -29,18 +29,21 @@ class Pedigree(dict):
                 if line.startswith("#"):
                     continue
                 data = line.strip().split('\t')
+                # check the data length
                 n_ped = _PedSample(*data[:5], phenotype=data[5:])
                 self.families[n_ped.fam_id].append(n_ped)
                 if n_ped.ind_id in self:
                     raise KeyError("Duplicate Individual Id %s" % n_ped.ind_id)
                 self[n_ped.ind_id] = n_ped
-                if n_ped.mat_id not in self and n_ped.mat_id != "0":
-                    self[n_ped.mat_id] = _PedSample(n_ped.fam_id, n_ped.mat_id, "0", "0", "2", "0")
-                if n_ped.pat_id not in self and n_ped.pat_id != "0":
-                    self[n_ped.pat_id] = _PedSample(n_ped.fam_id, n_ped.pat_id, "0", "0", "2", "0")
 
-            for indiv in self:
-                n_ped = self[indiv]
+            # Give parents a presence in the ped, even if they didn't have a line
+            for ind in self.values():
+                if ind.pat_id not in self and ind.pat_id != "0":
+                    self[ind.pat_id] = _PedSample(ind.fam_id, ind.pat_id, "0", "0", "1", "0")
+                if ind.mat_id not in self and ind.mat_id != "0":
+                    self[ind.mat_id] = _PedSample(ind.fam_id, ind.mat_id, "0", "0", "2", "0")
+            # Set parent's offspring
+            for n_ped in self.values():
                 if n_ped.pat_id in self:
                     self[n_ped.pat_id].offspring.append(n_ped)
                     n_ped.father = self[n_ped.pat_id]
@@ -110,6 +113,32 @@ class Pedigree(dict):
             if self[i].pat_id == self[indiv].pat_id or self[i].mat_id == self[indiv].mat_id:
                 yield self[i]
 
+    def get_trio_probands(self):
+        """
+        Yields _PedSample probands that are part of a trio i.e. niether parent is 0
+        """
+        for indiv in self.values():
+            if indiv.mat_id != '0'and indiv.pat_id != '0':
+                yield indiv
+
+    def get_quad_probands(self):
+        """
+        Yields _PedSample proband tuples that are part of an exact quad.
+        """
+        for fam in self.families:
+            already_yielded = {}
+            for indiv in self.families[fam]:
+                if indiv.ind_id in already_yielded:
+                    continue
+                if indiv.mat_id != "0" and indiv.pat_id != "0":
+                    siblings = set(self[indiv.mat_id].offspring).intersection(set(self[indiv.pat_id].offspring))
+                    if len(siblings) == 2:
+                        yield list(siblings)
+                    for sib in siblings:
+                        if indiv != sib:
+                            already_yielded[sib.ind_id] = 1
+                            yield (indiv, sib)
+
 
 class _PedSample(object):
 
@@ -133,6 +162,9 @@ class _PedSample(object):
         self.father = None
         self.mother = None
         self.offspring = []
+
+    def __hash__(self):
+        return hash(self.ind_id)
 
     def __repr__(self):
         return "PedigreeSample<%s:%s %s>" % (self.fam_id, self.ind_id, self.sex)

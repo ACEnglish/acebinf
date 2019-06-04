@@ -1,0 +1,6 @@
+1.0.1 - small patch
+
+Had a problem with redundant FORMATS in vcf_utils.edit_format.
+Had a bug with 'Duplicate Individual' false positive failures in Pedigree.__init__
+Added 'get trios' and 'get quads' helpers to Pedigree
+

@@ -1,4 +1,6 @@
-
+"""
+Sets up package
+"""
 from acebinf.cmd_exe import (
     cmd_exe
 )

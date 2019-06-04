@@ -7,7 +7,8 @@ Collection of simple utilities used when building bioinformatics tools
 * setup_logging - standardized setup of python logging
 * vcf_utils - little methods for editing vcf format/info
 
+--------
 Install
-------
+--------
 
 pip install ACEBinf
